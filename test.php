@@ -1,12 +1,13 @@
 <html>
 <head>
 	<title></title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 </head>
 <body>
 	<style type="text/css">
 	#map_canvas {
 		margin:0 auto;
-	  height: 600px;
+	  height: 300px;
 	  width: 600px;
 	}
 
@@ -14,13 +15,18 @@
 
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.exp&sensor=false"></script>
 	<div id="map_canvas" ></div>
+	<?php
+	$address = array("France","Germany", "Switzerland");
+	?>
 	<script type="text/javascript">
 		var geocoder;
 		var map;
-		var address = ["San Diego","Norway","switzerland","france","manilla","sydney", "tokyo","turkey","hongkong","dubai","florida","canada"];
-		// var address = ["Thailand","Nepal"];
+		// var address = ["San Diego","Norway","switzerland","france","manilla","sydney", "tokyo","turkey","hongkong","dubai","florida","canada"];
+
+		var address = <?php echo json_encode($address); ?>;
 		var nextAddress = 0;
 		var delay = 100;
+		var infowindow;
 
 		function initialize() {
 			geocoder = new google.maps.Geocoder();
@@ -42,7 +48,7 @@
 
 		function theNext() {
 	        if (nextAddress < address.length) {
-	          setTimeout('codeAddress("' + address[nextAddress] + '", ' + theNext +')', delay);
+	          setTimeout('codeAddress("' + address[nextAddress] + '", ' + nextAddress + ", " + theNext +')', delay);
 	          nextAddress++;
 	        } else {
 	          // We're done. Show map bounds	         
@@ -51,7 +57,7 @@
 	      }
 
 
-		function codeAddress(location, next) {
+		function codeAddress(location,index,next) {
 			var address = location;
 			geocoder.geocode({
 			  'address': location
@@ -59,27 +65,10 @@
 			  if (status == google.maps.GeocoderStatus.OK) {
 			    if (status != google.maps.GeocoderStatus.ZERO_RESULTS) {
 			      // map.setCenter(results[0].geometry.location);
-			      var infowindow = new google.maps.InfoWindow({
-			        content: '<b>' + address + '</b>',
-			        size: new google.maps.Size(150, 50)
-			      });
-
-			      var marker = new google.maps.Marker({
-			        position: results[0].geometry.location,
-			        map: map,
-			        title: address,
-			        html: address
-			      });
-
-			      google.maps.event.addListener(marker, 'click', function() {
-			      	infowindow.close();
-			      	infowindow.setContent('test');
-			        infowindow.open(map, this);
-			      });
-
-			      google.maps.event.addListener(map, "click", function(event) {
-					    infowindow.close();
-					});
+				    var p = results[0].geometry.location;
+					var lat=p.lat();
+					var lng=p.lng();
+				    createMarker(address, index, lat, lng);
 
 			    } else {
 			      alert("No results found");
@@ -98,6 +87,52 @@
 			});
         }
 
+        function createMarker(address, index, lat, lng){
+
+			var marker = new google.maps.Marker({
+			position: new google.maps.LatLng(lat,lng),
+			map: map,
+			title: address,
+			html: address
+			});
+			google.maps.event.addListener(marker, 'click', function() {
+				if(infowindow) {infowindow.close();}
+				infowindow = new google.maps.InfoWindow({
+				content: '<p>'+ index+'</p><b>' + address + '</b>',
+				size: new google.maps.Size(150, 50)
+				});
+				// infowindow.close();
+				// infowindow.setContent('test');
+				infowindow.open(map, this);
+				// var idNo = $('p').text();
+				// alert(text);
+				var className = '#info' + index;
+				// alert(className);
+				$(className)
+				.addClass('active')
+				.siblings().removeClass('active');
+
+				$(className)
+				.removeClass('inactive')
+				.siblings().addClass('inactive');
+
+
+				$('.inactive').fadeOut(1500);
+				$('.active').fadeIn(1500);
+
+			});
+
+			google.maps.event.addListener(map, "click", function(event) {
+			    infowindow.close();
+			    $('.saleManager')
+				.removeClass('inactive')
+				.addClass('active');
+
+				$('.inactive').fadeOut(1500);
+				$('.active').fadeIn(1500);
+			});
+        }
+
 
 
        
@@ -108,6 +143,23 @@
 
 
 	<script async defer src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDSdyqX-YfJ9mMcGqXSdGPOURjWGKSGJqM&sensor=false"></script>
+
+	<div class="main-container">
+
+		<?php
+			$count=0;
+			foreach ($address as $add) {
+				$class = "info".$count;
+				?>
+				<div id="<?php echo $class; ?>" class="saleManager"><?php echo "Information: ".$add; ?></div>
+
+				<?php
+				$count++;
+			}
+		?>
+
+
+	</div>
 
 
 </body>
