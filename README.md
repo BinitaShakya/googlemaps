@@ -6,6 +6,11 @@ Takes address and marks in the map.
 use geocoder.
 
 PLEASE CHECK TEST.PHP FILE.
+Handles: 
+1. "over query limit", 
+2. uses address instead of longitute and latitute, 
+3. closes infowindow when another infowindow is opened, 
+4. fadein and fadeouts the information on click in marker.
 
 Useful links:
 http://www.lootogo.com/googlemapsapi3/markerPlugin.html
