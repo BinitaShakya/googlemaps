@@ -35048,7 +35048,7 @@
 <Placemark>
 <name>Ticino</name>
 <description><![CDATA[Canton|Kanton|Chantun]]></description>
-<styleUrl>1</styleUrl>
+<styleUrl>#default</styleUrl>
 <visibility>1</visibility>
 <MultiGeometry>
 <Polygon>
@@ -37586,7 +37586,7 @@
 <Placemark>
 <name>Uri</name>
 <description><![CDATA[Canton|Kanton|Chantun]]></description>
-<styleUrl>1</styleUrl>
+<styleUrl>#default</styleUrl>
 <visibility>1</visibility>
 <MultiGeometry>
 <Polygon>

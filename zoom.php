@@ -4,7 +4,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<!-- <script src="geoxml3.js"></script> -->
 	<script type="text/javascript" src="https://cdn.rawgit.com/geocodezip/geoxml3/master/polys/geoxml3.js"></script>
-	<script type="text/javascript" src="https://cdn.rawgit.com/geocodezip/geoxml3/master/ProjectedOverlay.js"></script>
+	<!-- <script type="text/javascript" src="https://cdn.rawgit.com/geocodezip/geoxml3/master/ProjectedOverlay.js"></script> -->
 
 
 </head>
@@ -94,13 +94,14 @@
 
 
 		function highlightPoly(poly) {
-			poly.setOptions({fillOpacity: 0, strokeColor: "#000", outerWidth: 10});
+			// poly.setOptions({fillOpacity: 0, strokeColor: "#000", strokeWidth:10});
 		    
 		    google.maps.event.addListener(poly,"mouseover",function() {
-		      poly.setOptions({strokeWidth: 1000, fillOpacity: 0, strokeColor: "#e65100"});
+		      poly.setOptions({fillOpacity: 0, strokeColor: "#e65100", zIndex:100, strokeWidth: '30px'});
+
 		    });
 		    google.maps.event.addListener(poly,"mouseout",function() {
-		      poly.setOptions({strokeColor: "#000", fillOpacity: 0});
+		      poly.setOptions({strokeColor: "#000", fillOpacity: 0, zIndex:0});
 		    });
 
 		    // google.maps.event.addListener(poly,"mouseover",function() {
@@ -197,8 +198,9 @@
 				$('.inactive').fadeOut(1500);
 				$('.active').fadeIn(1500);
 
-				// map.setZoom(8);
+				// map.setZoom(map.getZoom() + 1);
 				// map.setCenter(event.latLng);
+
 
 			
 			});
