@@ -1,8 +1,10 @@
 <html>
 <head>
+	<meta charset="UTF-8">
 	<title></title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<script type='text/javascript' src='/jquery.scrollTo-min.js'></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/geocodezip/geoxml3/master/polys/geoxml3.js"></script>
 
 </head>
 <body>
@@ -75,7 +77,7 @@ span.infolabel{
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.exp&sensor=false"></script>
 	
 	<?php
-	$address = array("France","Germany", "Switzerland","San Diego","Norway","manilla","sydney", "tokyo","turkey","hongkong","dubai","florida","canada");
+	$address = array("Glarus","Graubünden", "Valais","Lucerne","Neuchâtel","Nidwalden","Obwalden", "Sankt Gallen","Schaffhausen","Schwyz","Solothurn","Thurgau","Ticino");
 	?>
 	<script type="text/javascript">
 		var geocoder;
@@ -86,6 +88,8 @@ span.infolabel{
 		var nextAddress = 0;
 		var delay = 100;
 		var infowindow;
+		var markers = [];
+		var polys = [];
 
 		function initialize() {
 			geocoder = new google.maps.Geocoder();
@@ -103,6 +107,50 @@ span.infolabel{
 			map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
 			theNext();
+
+			// For kml
+			geoXml = new geoXML3.parser({
+                map: map,
+                singleInfoWindow: true,
+                afterParse: useTheData
+            });
+            geoXml.parse('CHE.kml');
+		}
+
+		function useTheData(doc){
+		  // Geodata handling goes here, using JSON properties of the doc object
+		  geoXmlDoc = doc[0];
+		  for (var i = 0; i < doc[0].gpolygons.length; i++) {
+
+		    highlightPoly(doc[0].gpolygons[i]);
+		    polys.push(doc[0].gpolygons[i]);
+		    // doc[0].markers[i].setVisible(false);
+		  }
+		  // console.log(polys[1].title);
+
+		};
+
+
+		function highlightPoly(poly) {
+		    
+		    google.maps.event.addListener(poly,"click",function(event) {
+		      var currentZoom = this.getMap().getZoom();
+		      this.getMap().setZoom(currentZoom + 1);
+		      this.getMap().setCenter(event.latLng);
+		      // poly.infoWindow.close();
+		      // if(infowindow) {infowindow.close();}
+		      console.log('poly click event');
+
+		    });
+		    google.maps.event.addListener(poly,"mouseover",function() {
+		      poly.setOptions({fillColor:"#e65100", fillOpacity: 0.2, strokeColor: "#e65100", zIndex:100, strokeWidth: '30px'});
+
+		    });
+		    google.maps.event.addListener(poly,"mouseout",function() {
+		      poly.setOptions({strokeColor: "#000", fillOpacity: 0, zIndex:0});
+		      // poly.infoWindow.close();
+		    });
+
 		}
 
 		function theNext() {
@@ -151,6 +199,7 @@ span.infolabel{
 			var marker = new google.maps.Marker({
 			position: new google.maps.LatLng(lat,lng),
 			map: map,
+			animation: google.maps.Animation.DROP,
 			title: address,
 			html: address
 			});
@@ -163,22 +212,77 @@ span.infolabel{
 
 				var className = '#info' + index;
                 $('.saleManagerContainer').scrollTo(className,800);
+                infowindow.open(map, this);
+               
+                // toggleBounce(marker);
+                
+                // setTimeout(toggleBounce(), 1000);
+
+                //Onclick bounce the marker
+                marker.setAnimation(google.maps.Animation.BOUNCE);
+                stopAnimation(marker);
 
 			});
 
 			google.maps.event.addListener(map, "click", function(event) {
 			    infowindow.close();
-			    $('.saleManager')
-				.removeClass('inactive')
-				.addClass('active');
-
-				$('.inactive').fadeOut(1500);
-				$('.active').fadeIn(1500);
 			});
+
+			markers.push(marker);
         }
+
+        function stopAnimation(marker) {
+		    setTimeout(function () {
+		        marker.setAnimation(null);
+		    }, 1250);
+		}
+
+		$(function(){
+
+			$('.saleManager').click(function(){
+				var id = $(this).attr('id');
+				var index = id.split("info");
+				google.maps.event.trigger(markers[index[1]],'click');
+			});
+
+			$('.saleManager').mouseover(function() {
+				// var dis = $(':nth-child(5)', $(this)).attr('district');
+				var dis = $(this).find('p');
+				var dist = dis.html();
+
+				// var dis = $(this).text();
+				// var dist = dis.split(":");
+				$.each( polys, function( index, value ){
+					if (dist == value.title) {
+						google.maps.event.trigger(polys[index],'mouseover');
+					}
+				});
+
+			});
+
+			$('.saleManager').mouseout(function() {
+				var dis = $(this).find('p');
+				var dist = dis.html();
+				// console.log(dist[1]);
+
+				// google.maps.event.trigger(polys[index[1]],'mouseover');
+				$.each( polys, function( index, value ){
+					if (dist == value.title) {
+						google.maps.event.trigger(polys[index],'mouseout');
+					}
+				});
+
+			});
+			
+
+		});
 
             
 		google.maps.event.addDomListener(window, 'load', initialize);
+
+
+
+		
 
 
 	</script>
@@ -192,19 +296,18 @@ span.infolabel{
 
 		     
 		    <div id="info0" class="saleManager row">
-		      <div class="col-xs-12 col-sm-3 col-md-3">
-		        
-		              <img alt="" src="/static/media/images/salesmanagers/Picture3.jpg">
+		    	<p hidden>Glarus</p>
+		      <div class="col-xs-12 col-sm-3 col-md-3"> 
+		              
 		                                         
 
 		      </div>
 		      <div class="col-xs-12 col-sm-9 col-md-9">                                    
-		        <div class="name"><b> France</b></div>
+		        <div class="name"><b>Glarus</b></div>
 
 		        <div class="row">
 		          <div class="col-xs-12 col-sm-6 col-md-6">    
-		            <div class="address"><span class="infolabel">Adresse:</span>Rue des Vieux-Grenadiers 7, 1205 Genève</div>
-		            <div class="district"><span class="infolabel">District:</span>Genève</div>
+		            <div class="district" id="test"><span class="infolabel">District:</span>Glarus</div>
 		            <div class="deliveryService"><span class="infolabel">Aussendienst/Innendienst:</span>AD</div>
 		          </div>
 		          <div class="col-xs-12 col-sm-6 col-md-6">   
@@ -221,17 +324,16 @@ span.infolabel{
 		    <div id="info1" class="saleManager row">
 		      <div class="col-xs-12 col-sm-3 col-md-3">
 		        
-		              <img alt="" src="/static/media/images/salesmanagers/Picture2.jpg">
 		                                         
 
 		      </div>
 		      <div class="col-xs-12 col-sm-9 col-md-9">                                    
-		        <div class="name"><b> Germany</b></div>
+		        <div class="name"><b> Graubünden</b></div>
 
 		        <div class="row">
 		          <div class="col-xs-12 col-sm-6 col-md-6">    
 		            <div class="address"><span class="infolabel">Adresse:</span>Route de Cojonnex 18, 1000 Lausanne</div>
-		            <div class="district"><span class="infolabel">District:</span>Vaud Jura Vallais</div>
+		            <div class="district"><span class="infolabel">District:</span>Graubünden</div>
 		            <div class="deliveryService"><span class="infolabel">Aussendienst/Innendienst:</span>AD</div>
 		          </div>
 		          <div class="col-xs-12 col-sm-6 col-md-6">   
@@ -251,12 +353,12 @@ span.infolabel{
 
 		      </div>
 		      <div class="col-xs-12 col-sm-9 col-md-9">                                    
-		        <div class="name"><b>   Switzerland</b></div>
+		        <div class="name"><b>Valais</b></div>
 
 		        <div class="row">
 		          <div class="col-xs-12 col-sm-6 col-md-6">    
 		            <div class="address"><span class="infolabel">Adresse:</span>Verzuolo 19, 6633 Lavertezzo</div>
-		            <div class="district"><span class="infolabel">District:</span>Ticino</div>
+		            <div class="district"><span class="infolabel">District:</span>Valais</div>
 		            <div class="deliveryService"><span class="infolabel">Aussendienst/Innendienst:</span>AD</div>
 		          </div>
 		          <div class="col-xs-12 col-sm-6 col-md-6">   
@@ -273,17 +375,16 @@ span.infolabel{
 		    <div id="info3" class="saleManager row">
 		      <div class="col-xs-12 col-sm-3 col-md-3">
 		        
-		              <img alt="" src="/static/media/images/salesmanagers/Picture1.jpg">
 		                                         
 
 		      </div>
 		      <div class="col-xs-12 col-sm-9 col-md-9">                                    
-		        <div class="name"><b>Sandiego</b></div>
+		        <div class="name"><b>Lucerne</b></div>
 
 		        <div class="row">
 		          <div class="col-xs-12 col-sm-6 col-md-6">    
 		            <div class="address"><span class="infolabel">Adresse:</span>Haus Aristella, 3908 Saas-Balen</div>
-		            <div class="district"><span class="infolabel">District:</span>Bern Wallis</div>
+		            <div class="district"><span class="infolabel">District:</span>Lucerne</div>
 		            <div class="deliveryService"><span class="infolabel">Aussendienst/Innendienst:</span>AD</div>
 		          </div>
 		          <div class="col-xs-12 col-sm-6 col-md-6">   
@@ -300,17 +401,16 @@ span.infolabel{
 		    <div id="info4" class="saleManager row">
 		      <div class="col-xs-12 col-sm-3 col-md-3">
 		        
-		              <img alt="" src="/static/media/images/salesmanagers/Picture9.jpg">
 		                                         
 
 		      </div>
 		      <div class="col-xs-12 col-sm-9 col-md-9">                                    
-		        <div class="name"><b> Norway</b></div>
+		        <div class="name"><b>Neuchâtel</b></div>
 
 		        <div class="row">
 		          <div class="col-xs-12 col-sm-6 col-md-6">    
 		            <div class="address"><span class="infolabel">Adresse:</span>Marktpl. 9, 4001 Basel</div>
-		            <div class="district"><span class="infolabel">District:</span>Basel</div>
+		            <div class="district"><span class="infolabel">District:</span>Neuchâtel</div>
 		            <div class="deliveryService"><span class="infolabel">Aussendienst/Innendienst:</span>AD</div>
 		          </div>
 		          <div class="col-xs-12 col-sm-6 col-md-6">   
@@ -327,17 +427,16 @@ span.infolabel{
 		    <div id="info5" class="saleManager row">
 		      <div class="col-xs-12 col-sm-3 col-md-3">
 		        
-		              <img alt="" src="/static/media/images/salesmanagers/Picture6.jpg">
 		                                         
 
 		      </div>
 		      <div class="col-xs-12 col-sm-9 col-md-9">                                    
-		        <div class="name"><b> Manilla</b></div>
+		        <div class="name"><b>Nidwalden</b></div>
 
 		        <div class="row">
 		          <div class="col-xs-12 col-sm-6 col-md-6">    
 		            <div class="address"><span class="infolabel">Adresse:</span>Horwerstrasse 91, 6002 Luzern</div>
-		            <div class="district"><span class="infolabel">District:</span>Innerschweiz</div>
+		            <div class="district"><span class="infolabel">District:</span>Nidwalden</div>
 		            <div class="deliveryService"><span class="infolabel">Aussendienst/Innendienst:</span>AD</div>
 		          </div>
 		          <div class="col-xs-12 col-sm-6 col-md-6">   
@@ -354,17 +453,16 @@ span.infolabel{
 		    <div id="info6" class="saleManager row">
 		      <div class="col-xs-12 col-sm-3 col-md-3">
 		        
-		              <img alt="" src="/static/media/images/salesmanagers/Picture8.jpg">
 		                                         
 
 		      </div>
 		      <div class="col-xs-12 col-sm-9 col-md-9">                                    
-		        <div class="name"><b> Sydney</b></div>
+		        <div class="name"><b>Obwalden</b></div>
 
 		        <div class="row">
 		          <div class="col-xs-12 col-sm-6 col-md-6">    
 		            <div class="address"><span class="infolabel">Adresse:</span>Tellstrasse 25, 5001 Aarau</div>
-		            <div class="district"><span class="infolabel">District:</span>Aargau Schaffhausen</div>
+		            <div class="district"><span class="infolabel">District:</span>Obwalden</div>
 		            <div class="deliveryService"><span class="infolabel">Aussendienst/Innendienst:</span>AD</div>
 		          </div>
 		          <div class="col-xs-12 col-sm-6 col-md-6">   
@@ -381,17 +479,16 @@ span.infolabel{
 		    <div id="info7" class="saleManager row">
 		      <div class="col-xs-12 col-sm-3 col-md-3">
 		        
-		              <img alt="" src="/static/media/images/salesmanagers/Picture7.jpg">
 		                                         
 
 		      </div>
 		      <div class="col-xs-12 col-sm-9 col-md-9">                                    
-		        <div class="name"><b> Tokyo</b></div>
+		        <div class="name"><b>Sankt Gallen</b></div>
 
 		        <div class="row">
 		          <div class="col-xs-12 col-sm-6 col-md-6">    
 		            <div class="address"><span class="infolabel">Adresse:</span>Sihlfeldstrasse 45, 8003 Zurich</div>
-		            <div class="district"><span class="infolabel">District:</span>Zürich</div>
+		            <div class="district"><span class="infolabel">District:</span>Sankt Gallen</div>
 		            <div class="deliveryService"><span class="infolabel">Aussendienst/Innendienst:</span>AD</div>
 		          </div>
 		          <div class="col-xs-12 col-sm-6 col-md-6">   
@@ -408,17 +505,16 @@ span.infolabel{
 		    <div id="info8" class="saleManager row">
 		      <div class="col-xs-12 col-sm-3 col-md-3">
 		        
-		              <img alt="" src="/static/media/images/salesmanagers/Picture5.jpg">
 		                                         
 
 		      </div>
 		      <div class="col-xs-12 col-sm-9 col-md-9">                                    
-		        <div class="name"><b>Turkey</b></div>
+		        <div class="name"><b>Schaffhausen</b></div>
 
 		        <div class="row">
 		          <div class="col-xs-12 col-sm-6 col-md-6">    
 		            <div class="address"><span class="infolabel">Adresse:</span>Ballonstrasse 28, 8952 Schlieren</div>
-		            <div class="district"><span class="infolabel">District:</span>Ostschweiz</div>
+		            <div class="district"><span class="infolabel">District:</span>Schaffhausen</div>
 		            <div class="deliveryService"><span class="infolabel">Aussendienst/Innendienst:</span>AD</div>
 		          </div>
 		          <div class="col-xs-12 col-sm-6 col-md-6">   
@@ -438,12 +534,12 @@ span.infolabel{
 
 		      </div>
 		      <div class="col-xs-12 col-sm-9 col-md-9">                                    
-		        <div class="name"><b> Hongkong</b></div>
+		        <div class="name"><b>Schwyz</b></div>
 
 		        <div class="row">
 		          <div class="col-xs-12 col-sm-6 col-md-6">    
 		            <div class="address"><span class="infolabel">Adresse:</span>Freiburgstrasse 8,, 3010 Bern</div>
-		            <div class="district"><span class="infolabel">District:</span>Bern Basel Aargau</div>
+		            <div class="district"><span class="infolabel">District:</span>Schwyz</div>
 		            <div class="deliveryService"><span class="infolabel">Aussendienst/Innendienst:</span>AD</div>
 		          </div>
 		          <div class="col-xs-12 col-sm-6 col-md-6">   
@@ -463,12 +559,12 @@ span.infolabel{
 
 		      </div>
 		      <div class="col-xs-12 col-sm-9 col-md-9">                                    
-		        <div class="name"><b> Dubai</b></div>
+		        <div class="name"><b>Solothurn</b></div>
 
 		        <div class="row">
 		          <div class="col-xs-12 col-sm-6 col-md-6">    
 		            <div class="address"><span class="infolabel">Adresse:</span>Bahnhofpl. 7, 3920  Zermatt</div>
-		            <div class="district"><span class="infolabel">District:</span>Bayer-Haus</div>
+		            <div class="district"><span class="infolabel">District:</span>Solothurn</div>
 		            <div class="deliveryService"><span class="infolabel">Aussendienst/Innendienst:</span>ID</div>
 		          </div>
 		          <div class="col-xs-12 col-sm-6 col-md-6">   
@@ -488,12 +584,12 @@ span.infolabel{
 
 		      </div>
 		      <div class="col-xs-12 col-sm-9 col-md-9">                                    
-		        <div class="name"><b> Florida</b></div>
+		        <div class="name"><b>Thurgau</b></div>
 
 		        <div class="row">
 		          <div class="col-xs-12 col-sm-6 col-md-6">    
 		            <div class="address"><span class="infolabel">Adresse:</span>Bei der Kirche, Haus, 3910 Saas-Grund</div>
-		            <div class="district"><span class="infolabel">District:</span></div>
+		            <div class="district"><span class="infolabel">District:</span>Thurgau</div>
 		            <div class="deliveryService"><span class="infolabel">Aussendienst/Innendienst:</span>ID</div>
 		          </div>
 		          <div class="col-xs-12 col-sm-6 col-md-6">   
@@ -513,12 +609,12 @@ span.infolabel{
 
 		      </div>
 		      <div class="col-xs-12 col-sm-9 col-md-9">                                    
-		        <div class="name"><b>Canada</b></div>
+		        <div class="name"><b>Ticino</b></div>
 
 		        <div class="row">
 		          <div class="col-xs-12 col-sm-6 col-md-6">    
 		            <div class="address"><span class="infolabel">Adresse:</span>Bei der Kirche, Haus, 3910 Saas-Grund</div>
-		            <div class="district"><span class="infolabel">District:</span>Bayer-Haus</div>
+		            <div class="district"><span class="infolabel">District:</span>Ticino</div>
 		            <div class="deliveryService"><span class="infolabel">Aussendienst/Innendienst:</span>ID</div>
 		          </div>
 		          <div class="col-xs-12 col-sm-6 col-md-6">   

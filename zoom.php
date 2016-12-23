@@ -65,51 +65,60 @@
 
 
 			// For kml
-				geoXml = new geoXML3.parser({
-                    map: map,
-                    singleInfoWindow: true,
-                    afterParse: useTheData
-                });
-                geoXml.parse('CHE.kml');
+			geoXml = new geoXML3.parser({
+                map: map,
+                singleInfoWindow: true,
+                afterParse: useTheData
+            });
+            geoXml.parse('CHE.kml');
 
-
+            
 
 
 		}
 
 		function useTheData(doc){
-			console.log('useTheData');
 		  // Geodata handling goes here, using JSON properties of the doc object
-		  var sidebarHtml = '<table><tr><td><a href="javascript:showAll();">Show All</a></td></tr>';
+		  // var sidebarHtml = '<table><tr><td><a href="javascript:showAll();">Show All</a></td></tr>';
 		  geoXmlDoc = doc[0];
 		  for (var i = 0; i < doc[0].gpolygons.length; i++) {
-		    // console.log(doc[0].markers[i].title);
-		    sidebarHtml += '<tr><td><a href="javascript:kmlClick('+i+');">'+doc[0].placemarks[i].name+'</a> - <a href="javascript:kmlShowPoly('+i+');">show</a> - <a href="javascript:kmlHighlightPoly('+i+');">highlight</a></td></tr>';
+		    // sidebarHtml += '<tr><td><a href="javascript:kmlClick('+i+');">'+doc[0].placemarks[i].name+'</a> - <a href="javascript:kmlShowPoly('+i+');">show</a> - <a href="javascript:kmlHighlightPoly('+i+');">highlight</a></td></tr>';
+		    // sidebarHtml += '<tr><td><a href="javascript:kmlClick('+i+');">'+doc[0].placemarks[i].name+'</a> - <a href="javascript:kmlShowPoly('+i+');">show</a> - <a href="javascript:kmlHighlightPoly('+i+');">highlight</a></td></tr>';
+
 		    highlightPoly(doc[0].gpolygons[i]);
 		    // doc[0].markers[i].setVisible(false);
 		  }
-		  sidebarHtml += "</table>";
-		  document.getElementById("sidebar").innerHTML = sidebarHtml;
+		  // sidebarHtml += "</table>";
+		  // document.getElementById("sidebar").innerHTML = sidebarHtml;
+
+
+
 		};
 
 
 		function highlightPoly(poly) {
-			// poly.setOptions({fillOpacity: 0, strokeColor: "#000", strokeWidth:10});
 		    
+		    google.maps.event.addListener(poly,"click",function(event) {
+		      // console.log('test');
+		      // var position = this.getMap().getPosition();
+		      // console.log('position:' + position);
+		      // this.getMap().setCenter(position);
+		      var currentZoom = this.getMap().getZoom();
+		      this.getMap().setZoom(currentZoom + 1);
+		      this.getMap().setCenter(event.latLng);
+		      poly.infoWindow.close();
+		      if(infowindow) {infowindow.close();}
+		      console.log('poly click event');
+
+		    });
 		    google.maps.event.addListener(poly,"mouseover",function() {
-		      poly.setOptions({fillOpacity: 0, strokeColor: "#e65100", zIndex:100, strokeWidth: '30px'});
+		      poly.setOptions({fillColor:"#e65100", fillOpacity: 0.2, strokeColor: "#e65100", zIndex:100, strokeWidth: '30px'});
 
 		    });
 		    google.maps.event.addListener(poly,"mouseout",function() {
 		      poly.setOptions({strokeColor: "#000", fillOpacity: 0, zIndex:0});
+		      // poly.infoWindow.close();
 		    });
-
-		    // google.maps.event.addListener(poly,"mouseover",function() {
-		    //   poly.setOptions({fillColor: "#0000FF", strokeColor: "#0000FF"});
-		    // });
-		    // google.maps.event.addListener(poly,"mouseout",function() {
-		    //   poly.setOptions({fillColor: "#FF0000", strokeColor: "#FF0000", fillOpacity: 0.3});
-		    // });
 
 		}
 
@@ -168,13 +177,9 @@
 				content: '<p>'+ index+'</p><b>' + address + '</b>',
 				size: new google.maps.Size(150, 50)
 				});
-				// infowindow.close();
-				// infowindow.setContent('test');
 				infowindow.open(map, this);
-				// var idNo = $('p').text();
-				// alert(text);
+				//Fade out effect
 				var className = '#info' + index;
-				// alert(className);
 				$(className)
 				.addClass('active')
 				.siblings().removeClass('active');
@@ -183,7 +188,6 @@
 				.removeClass('inactive')
 				.siblings().addClass('inactive');
 
-
 				$('.inactive').fadeOut(1500);
 				$('.active').fadeIn(1500);
 
@@ -191,6 +195,7 @@
 
 			google.maps.event.addListener(map, "click", function(event) {
 			    if(infowindow) {infowindow.close();}
+			    // Fade out effect
 			    $('.saleManager')
 				.removeClass('inactive')
 				.addClass('active');
@@ -198,9 +203,9 @@
 				$('.inactive').fadeOut(1500);
 				$('.active').fadeIn(1500);
 
-				// map.setZoom(map.getZoom() + 1);
-				// map.setCenter(event.latLng);
-
+				map.setZoom(map.getZoom() + 1);
+				map.setCenter(event.latLng);
+				console.log('map click event');
 
 			
 			});
