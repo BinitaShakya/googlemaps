@@ -19,10 +19,10 @@ To create kml file:
 
 http://gadm.org/country
 
-choose country
-File format : google earth .kmz
-when downloaded change .kmz to .zip
-extract file
+1. choose country
+2. File format : google earth .kmz
+3. when downloaded change .kmz to .zip
+4. extract file
 
 
 Useful links:
