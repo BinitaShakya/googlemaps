@@ -15,6 +15,15 @@ Handles:
 3. closes infowindow when another infowindow is opened, 
 4. fadein and fadeouts the information on click in marker.
 
+To create kml file:
+
+http://gadm.org/country
+choose country
+File format : google earth .kmz
+when downloaded change .kmz to .zip
+extract file
+
+
 Useful links:
 
 http://www.lootogo.com/googlemapsapi3/markerPlugin.html
