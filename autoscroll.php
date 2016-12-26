@@ -140,7 +140,6 @@ span.infolabel{
 		      this.getMap().setCenter(event.latLng);
 		      // poly.infoWindow.close();
 		      // if(infowindow) {infowindow.close();}
-		      console.log('poly click event');
 
 		    });
 		    google.maps.event.addListener(poly,"mouseover",function() {
@@ -250,7 +249,6 @@ span.infolabel{
 				var dis = $(this).find('p');
 				var dist = dis.html();
 				alldist = dist.split(",");
-				console.log(alldist);
 				$.each( alldist, function(i){
 					$.each( polys, function( index, value){	
 						if ($.trim(alldist[i]) == $.trim(value.title)) {
