@@ -5,15 +5,20 @@ Sample code for google maps implementation in your website.
 Takes address and marks in the map.
 use geocoder.
 
-PLEASE CHECK TEST.PHP FILE.
+PLEASE CHECK TEST.PHP, ZOOM.PHP and AUTOSCROLL.PHP.
 
 
 Handles: 
 
-1. "over query limit", 
-2. uses address instead of longitute and latitute, 
-3. closes infowindow when another infowindow is opened, 
-4. fadein and fadeouts the information on click in marker.
+1. "over query limit", (File: all)
+2. uses address instead of longitute and latitute, (file: all)
+3. closes infowindow when another infowindow is opened, (file: All)
+4. fadein and fadeouts the information on click in marker. (file: zoom.php)
+5. Scroll effects when click in the marker. (file: autoscroll.php)
+6. Marker animation (bounce) when click on list of items.(file: autoscroll.php)
+7. Show border around the country(thick border) and its districts(thin border) using kml file and geoXML3.(file: autoscroll.php, zoom.php)
+8. Zooms in effect when click on polygons.(file: autoscroll.php, zoom.php)
+9. Show active area(district) of the sale managers when hover on the list.(file: autoscroll.php)
 
 To create kml file:
 
