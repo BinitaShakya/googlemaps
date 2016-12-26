@@ -90,6 +90,7 @@ span.infolabel{
 		var infowindow;
 		var markers = [];
 		var polys = [];
+		var alldist = [];
 
 		function initialize() {
 			geocoder = new google.maps.Geocoder();
@@ -245,31 +246,31 @@ span.infolabel{
 				google.maps.event.trigger(markers[index[1]],'click');
 			});
 
-			$('.saleManager').mouseover(function() {
-				// var dis = $(':nth-child(5)', $(this)).attr('district');
+			$('.saleManager').mouseenter(function() {
 				var dis = $(this).find('p');
 				var dist = dis.html();
-
-				// var dis = $(this).text();
-				// var dist = dis.split(":");
-				$.each( polys, function( index, value ){
-					if (dist == value.title) {
-						google.maps.event.trigger(polys[index],'mouseover');
-					}
+				alldist = dist.split(",");
+				console.log(alldist);
+				$.each( alldist, function(i){
+					$.each( polys, function( index, value){	
+						if ($.trim(alldist[i]) == $.trim(value.title)) {
+							polys[index].setOptions({fillColor:"#e65100", fillOpacity: 0.2, strokeColor: "#e65100", zIndex:100, strokeWidth: '30px'});
+						}
+					});					
 				});
 
 			});
 
-			$('.saleManager').mouseout(function() {
+			$('.saleManager').mouseleave(function() {
 				var dis = $(this).find('p');
 				var dist = dis.html();
-				// console.log(dist[1]);
 
-				// google.maps.event.trigger(polys[index[1]],'mouseover');
-				$.each( polys, function( index, value ){
-					if (dist == value.title) {
-						google.maps.event.trigger(polys[index],'mouseout');
-					}
+				$.each( alldist, function(i){
+					$.each( polys, function( index, value ){
+						if ($.trim(alldist[i]) == $.trim(value.title)) {
+							polys[index].setOptions({strokeColor: "#000", fillOpacity: 0, zIndex:0});
+						}
+					});
 				});
 
 			});
@@ -296,7 +297,7 @@ span.infolabel{
 
 		     
 		    <div id="info0" class="saleManager row">
-		    	<p hidden>Glarus</p>
+		    	<p hidden>Aargau,Bern, Glarus</p>
 		      <div class="col-xs-12 col-sm-3 col-md-3"> 
 		              
 		                                         
@@ -307,7 +308,7 @@ span.infolabel{
 
 		        <div class="row">
 		          <div class="col-xs-12 col-sm-6 col-md-6">    
-		            <div class="district" id="test"><span class="infolabel">District:</span>Glarus</div>
+		            <div class="district" id="test"><span class="infolabel">District:</span>Aargau,Bern, Glarus</div>
 		            <div class="deliveryService"><span class="infolabel">Aussendienst/Innendienst:</span>AD</div>
 		          </div>
 		          <div class="col-xs-12 col-sm-6 col-md-6">   
@@ -322,13 +323,14 @@ span.infolabel{
 
 		     
 		    <div id="info1" class="saleManager row">
+		    <p hidden>Aargau,Bern, Glarus</p>
 		      <div class="col-xs-12 col-sm-3 col-md-3">
 		        
 		                                         
 
 		      </div>
 		      <div class="col-xs-12 col-sm-9 col-md-9">                                    
-		        <div class="name"><b> Graubünden</b></div>
+		        <div class="name"><b>Graubünden</b></div>
 
 		        <div class="row">
 		          <div class="col-xs-12 col-sm-6 col-md-6">    
@@ -348,6 +350,7 @@ span.infolabel{
 
 		     
 		    <div id="info2" class="saleManager row">
+		    <p hidden>Aargau,Bern, Glarus</p>
 		      <div class="col-xs-12 col-sm-3 col-md-3">
 		                                         
 
@@ -373,6 +376,7 @@ span.infolabel{
 
 		     
 		    <div id="info3" class="saleManager row">
+		    <p hidden>Aargau,Bern, Glarus</p>
 		      <div class="col-xs-12 col-sm-3 col-md-3">
 		        
 		                                         
@@ -399,6 +403,7 @@ span.infolabel{
 
 		     
 		    <div id="info4" class="saleManager row">
+		    <p hidden>Aargau,Bern, Glarus</p>
 		      <div class="col-xs-12 col-sm-3 col-md-3">
 		        
 		                                         
@@ -425,6 +430,7 @@ span.infolabel{
 
 		     
 		    <div id="info5" class="saleManager row">
+		    <p hidden>Aargau,Bern, Glarus</p>
 		      <div class="col-xs-12 col-sm-3 col-md-3">
 		        
 		                                         
@@ -451,6 +457,7 @@ span.infolabel{
 
 		     
 		    <div id="info6" class="saleManager row">
+		    <p hidden>Aargau,Bern, Glarus</p>
 		      <div class="col-xs-12 col-sm-3 col-md-3">
 		        
 		                                         
@@ -477,6 +484,7 @@ span.infolabel{
 
 		     
 		    <div id="info7" class="saleManager row">
+		    <p hidden>Aargau,Bern, Glarus</p>
 		      <div class="col-xs-12 col-sm-3 col-md-3">
 		        
 		                                         
@@ -503,6 +511,7 @@ span.infolabel{
 
 		     
 		    <div id="info8" class="saleManager row">
+		    <p hidden>Aargau,Bern, Glarus</p>
 		      <div class="col-xs-12 col-sm-3 col-md-3">
 		        
 		                                         
@@ -529,6 +538,7 @@ span.infolabel{
 
 		     
 		    <div id="info9" class="saleManager row">
+		    <p hidden>Aargau,Bern, Glarus</p>
 		      <div class="col-xs-12 col-sm-3 col-md-3">
 		                                         
 
@@ -554,6 +564,7 @@ span.infolabel{
 
 		     
 		    <div id="info10" class="saleManager row">
+		    <p hidden>Aargau,Bern, Glarus</p>
 		      <div class="col-xs-12 col-sm-3 col-md-3">
 		                                         
 
@@ -579,6 +590,7 @@ span.infolabel{
 
 		     
 		    <div id="info11" class="saleManager row">
+		    <p hidden>Aargau,Bern, Glarus</p>
 		      <div class="col-xs-12 col-sm-3 col-md-3">
 		                                         
 
@@ -604,6 +616,7 @@ span.infolabel{
 
 		     
 		    <div id="info12" class="saleManager row">
+		    <p hidden>Aargau,Bern, Glarus</p>
 		      <div class="col-xs-12 col-sm-3 col-md-3">
 		                                         
 
