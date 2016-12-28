@@ -2,6 +2,8 @@
 <head>
 	<title></title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDSdyqX-YfJ9mMcGqXSdGPOURjWGKSGJqM&sensor=false"></script>   
+
 	<!-- <script src="geoxml3.js"></script> -->
 	<script type="text/javascript" src="https://cdn.rawgit.com/geocodezip/geoxml3/master/polys/geoxml3.js"></script>
 	<!-- <script type="text/javascript" src="https://cdn.rawgit.com/geocodezip/geoxml3/master/ProjectedOverlay.js"></script> -->
@@ -18,7 +20,7 @@
 
 	</style>
 
-	<script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.exp&sensor=false"></script>
+	<!-- <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.exp&sensor=false"></script> -->
 	<div id="map_canvas" ></div>
 	<?php
 	$address = array("France","Germany", "Switzerland");
@@ -229,7 +231,7 @@
 	</script>
 
 
-	<script async defer src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDSdyqX-YfJ9mMcGqXSdGPOURjWGKSGJqM&sensor=false"></script>
+	<!-- <script async defer src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDSdyqX-YfJ9mMcGqXSdGPOURjWGKSGJqM&sensor=false"></script> -->
 
 	<div class="main-container">
 

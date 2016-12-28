@@ -3,6 +3,7 @@
 	<meta charset="UTF-8">
 	<title></title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDSdyqX-YfJ9mMcGqXSdGPOURjWGKSGJqM&sensor=false"></script>   
 	<script type='text/javascript' src='/jquery.scrollTo-min.js'></script>
 	<script type="text/javascript" src="https://cdn.rawgit.com/geocodezip/geoxml3/master/polys/geoxml3.js"></script>
 
@@ -74,7 +75,8 @@ span.infolabel{
 
 	</style>
 
-	<script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.exp&sensor=false"></script>
+
+	<!-- <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.exp&sensor=false"></script> -->
 	
 	<?php
 	$address = array("Glarus","Graubünden", "Valais","Lucerne","Neuchâtel","Nidwalden","Obwalden", "Sankt Gallen","Schaffhausen","Schwyz","Solothurn","Thurgau","Ticino");
@@ -287,7 +289,7 @@ span.infolabel{
 	</script>
 
 
-	<script async defer src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDSdyqX-YfJ9mMcGqXSdGPOURjWGKSGJqM&sensor=false"></script>
+	<!-- <script async defer src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDSdyqX-YfJ9mMcGqXSdGPOURjWGKSGJqM&sensor=false"></script> -->
 
 		<div id="map_canvas" ></div>
 		<div class="saleManagerContainer"> 
